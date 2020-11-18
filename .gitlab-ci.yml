@@ -1,0 +1,16 @@
+stages:
+  - deploy
+
+deploy:
+  stage: deploy
+  before_script: 
+   #generate ssh key   
+     - mkdir -p ~/.ssh     
+     - echo -e "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa     
+     - chmod 600 ~/.ssh/id_rsa     
+     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'   
+  script:    
+#run the command 
+      - scp -o StrictHostKeyChecking=no .gitlab_deploy.sh ubuntu@65.0.92.62:/home/ubuntu
+      - ssh -o StrictHostKeyChecking=no ubuntu@65.0.92.62
+      - bash .gitlab_deploy.sh
